@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 싱크클럽 — 함께 생각하고, 함께 성장하다</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cyan: #0099cc;
+      --violet: #6d28d9;
+      --bg: #f5f7ff;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: rgba(0,0,0,0.07);
+      --grad: linear-gradient(135deg, #00aaee, #7b2ff7);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 5vw;
+      background: rgba(245, 247, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      transition: background 0.3s;
+    }
+
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--violet); }
+
+    .nav-cta {
+      background: var(--grad);
+      color: #fff !important;
+      padding: 0.45rem 1.2rem;
+      border-radius: 99px;
+      font-weight: 600 !important;
+      transition: opacity 0.2s !important;
+    }
+
+    .nav-cta:hover { opacity: 0.85; color: #fff !important; }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 5vw;
+      overflow: hidden;
+      background: linear-gradient(145deg, #eef2ff 0%, #f5efff 50%, #e0f7ff 100%);
+    }
+
+    #particle-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-badge {
+      position: relative;
+      display: inline-block;
+      background: rgba(109, 40, 217, 0.08);
+      border: 1px solid rgba(109, 40, 217, 0.25);
+      color: var(--violet);
+      padding: 0.3rem 1rem;
+      border-radius: 99px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-title {
+      position: relative;
+      font-size: clamp(2.4rem, 6vw, 4.8rem);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.2rem;
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .hero-title .grad {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      position: relative;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      max-width: 540px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .hero-btns {
+      position: relative;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+
+    .btn-primary {
+      background: var(--grad);
+      color: #fff;
+      border: none;
+      padding: 0.85rem 2rem;
+      border-radius: 99px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(123, 47, 247, 0.45);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(0,0,0,0.18);
+      padding: 0.85rem 2rem;
+      border-radius: 99px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-ghost:hover { border-color: var(--violet); color: var(--violet); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-hint svg { opacity: 0.5; }
+
+    /* ── SECTIONS ── */
+    section { padding: 6rem 5vw; }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--violet);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 560px;
+    }
+
+    /* ── ABOUT ── */
+    #about { border-top: 1px solid var(--border); background: var(--bg); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-card:hover { border-color: rgba(109,40,217,0.35); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(109,40,217,0.12); }
+
+    .stat-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label { color: var(--muted); font-size: 0.85rem; }
+
+    /* ── ACTIVITIES ── */
+    #activities {
+      background: linear-gradient(180deg, #eef0ff 0%, #f3eeff 100%);
+      border-top: 1px solid var(--border);
+    }
+
+    .activities-header { text-align: center; margin-bottom: 3.5rem; }
+    .activities-header .section-desc { margin: 0 auto; }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(109, 40, 217, 0.3);
+      box-shadow: 0 16px 40px rgba(109,40,217,0.12);
+    }
+
+    .card-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .icon-cyan { background: rgba(0, 170, 238, 0.12); }
+    .icon-violet { background: rgba(109, 40, 217, 0.1); }
+    .icon-pink { background: rgba(236, 72, 153, 0.1); }
+
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .card p { color: var(--muted); font-size: 0.92rem; line-height: 1.7; }
+
+    .card-tag {
+      display: inline-block;
+      margin-top: 1.2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      background: rgba(0, 153, 204, 0.1);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 153, 204, 0.25);
+    }
+
+    /* ── BENEFITS ── */
+    #benefits { border-top: 1px solid var(--border); background: var(--bg); }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+
+    .benefit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .benefit-item:hover { border-color: rgba(109, 40, 217, 0.3); box-shadow: 0 6px 20px rgba(109,40,217,0.1); }
+
+    .benefit-icon {
+      width: 40px; height: 40px;
+      min-width: 40px;
+      border-radius: 10px;
+      background: rgba(109, 40, 217, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .benefit-item h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .benefit-item p { color: var(--muted); font-size: 0.85rem; }
+
+    .benefits-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 360px;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.25;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .orb-1 { width: 260px; height: 260px; background: var(--violet); animation-delay: 0s; opacity: 0.15; }
+    .orb-2 { width: 200px; height: 200px; background: #00aaee; top: 20%; right: 10%; animation-delay: 2s; opacity: 0.15; }
+
+    .visual-card {
+      position: relative;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      z-index: 1;
+      backdrop-filter: blur(8px);
+      min-width: 240px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .visual-card .big-num {
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    .visual-card p { color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem; }
+
+    /* ── JOIN ── */
+    #join {
+      background: linear-gradient(135deg, #eef2ff 0%, #f5eeff 100%);
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .join-inner { max-width: 560px; margin: 0 auto; }
+
+    .join-form {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .join-form input {
+      flex: 1;
+      min-width: 220px;
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 99px;
+      padding: 0.85rem 1.4rem;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .join-form input::placeholder { color: var(--muted); }
+    .join-form input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(109,40,217,0.1); }
+
+    .join-note {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      padding: 2.5rem 5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-size: 1rem;
+      font-weight: 700;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-copy { color: var(--muted); font-size: 0.82rem; }
+
+    footer a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    footer a:hover { color: var(--violet); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.25; }
+      50%       { transform: scale(1.12); opacity: 0.38; }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── TEXT BACKGROUND ── */
+    #text-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.07;
+    }
+
+    #text-bg span {
+      position: absolute;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #ff0000;
+      white-space: nowrap;
+      transform-origin: center;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+
+      .about-grid,
+      .benefits-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .cards-grid { grid-template-columns: 1fr; }
+
+      .about-stats { grid-template-columns: 1fr 1fr; }
+
+      .benefits-visual { height: 240px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TEXT BACKGROUND -->
+  <div id="text-bg"></div>
+
+  <!-- NAV -->
+  <nav>
+    <span class="nav-logo">⚡ AI 싱크클럽</span>
+    <ul class="nav-links">
+      <li><a href="#about">소개</a></li>
+      <li><a href="#activities">활동</a></li>
+      <li><a href="#benefits">혜택</a></li>
+      <li><a href="#join" class="nav-cta">참여하기</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <canvas id="particle-canvas"></canvas>
+    <span class="hero-badge">🤖 AI × 커뮤니티 × 성장</span>
+    <h1 class="hero-title">
+      함께 생각하고,<br />
+      <span class="grad">함께 성장하다</span>
+    </h1>
+    <p class="hero-sub">AI 싱크클럽은 인공지능을 공부하고 적용하는 사람들이 모여<br />지식을 나누고, 프로젝트를 만들며 함께 나아가는 커뮤니티입니다.</p>
+    <div class="hero-btns">
+      <a href="#join" class="btn-primary">지금 참여하기</a>
+      <a href="#activities" class="btn-ghost">활동 둘러보기</a>
+    </div>
+    <div class="scroll-hint">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      스크롤하여 더 보기
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-grid">
+      <div class="fade-in">
+        <span class="section-label">About Us</span>
+        <h2 class="section-title">AI를 배우는<br />가장 좋은 방법은<br /><span style="color:var(--violet)">함께하는 것</span></h2>
+        <p class="section-desc" style="margin-top:1rem;">AI 싱크클럽은 개발자, 기획자, 디자이너 등 다양한 배경을 가진 사람들이 모여 AI 기술을 탐구하고, 실제 문제를 해결하며 함께 성장하는 커뮤니티입니다. 혼자 공부할 때보다 훨씬 빠르게, 훨씬 멀리 갈 수 있습니다.</p>
+      </div>
+      <div class="about-stats fade-in">
+        <div class="stat-card">
+          <div class="stat-num">120+</div>
+          <div class="stat-label">활성 멤버</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">30+</div>
+          <div class="stat-label">완료 프로젝트</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">50+</div>
+          <div class="stat-label">스터디 세션</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">12+</div>
+          <div class="stat-label">월간 이벤트</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVITIES -->
+  <section id="activities">
+    <div class="activities-header fade-in">
+      <span class="section-label">Activities</span>
+      <h2 class="section-title">다양한 방식으로<br />AI를 경험하세요</h2>
+      <p class="section-desc">이론부터 실습까지, 강연부터 네트워킹까지 — 당신의 수준과 관심사에 맞는 활동이 기다리고 있습니다.</p>
+    </div>
+    <div class="cards-grid">
+      <div class="card fade-in">
+        <div class="card-icon icon-cyan">🧠</div>
+        <h3>AI 스터디</h3>
+        <p>논문 리뷰, 최신 모델 분석, LLM 튜닝 실습 등 체계적인 스터디 그룹을 운영합니다. 주 1회 온·오프라인 병행으로 진행됩니다.</p>
+        <span class="card-tag">매주 진행</span>
+      </div>
+      <div class="card fade-in">
+        <div class="card-icon icon-violet">🚀</div>
+        <h3>팀 프로젝트</h3>
+        <p>실제 문제를 AI로 해결하는 팀 프로젝트를 기획하고 진행합니다. 아이디어부터 배포까지 함께 만들어 가는 경험을 제공합니다.</p>
+        <span class="card-tag" style="color:var(--violet);border-color:rgba(123,47,247,0.3);background:rgba(123,47,247,0.1);">분기별 진행</span>
+      </div>
+      <div class="card fade-in">
+        <div class="card-icon icon-pink">🤝</div>
+        <h3>네트워킹 & 특강</h3>
+        <p>AI 현업 종사자, 연구자, 창업가를 초청한 특강과 멤버 간 자유로운 네트워킹 자리를 정기적으로 마련합니다.</p>
+        <span class="card-tag" style="color:#ec4899;border-color:rgba(236,72,153,0.3);background:rgba(236,72,153,0.1);">월 2회 진행</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section id="benefits">
+    <div class="benefits-grid">
+      <div class="fade-in">
+        <span class="section-label">Benefits</span>
+        <h2 class="section-title">멤버가 되면<br />이런 것들이 달라집니다</h2>
+        <div class="benefit-list" style="margin-top:2rem;">
+          <div class="benefit-item">
+            <div class="benefit-icon">📚</div>
+            <div>
+              <h4>큐레이션된 학습 자료</h4>
+              <p>검증된 AI 논문, 강의, 도구 모음을 멤버 전용 채널에서 제공받습니다.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">💬</div>
+            <div>
+              <h4>전문가 멘토링</h4>
+              <p>업계 현직자와 연결되어 커리어와 프로젝트에 대한 실질적인 피드백을 받습니다.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">🏆</div>
+            <div>
+              <h4>성과 공유 플랫폼</h4>
+              <p>완성된 프로젝트와 연구를 발표하고 포트폴리오로 활용할 기회를 제공합니다.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">🌐</div>
+            <div>
+              <h4>글로벌 커뮤니티 연계</h4>
+              <p>국내외 AI 행사 및 컨퍼런스 정보 공유와 공동 참가 기회를 연결해드립니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="benefits-visual fade-in">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="visual-card">
+          <div class="big-num">98%</div>
+          <p>멤버 재가입률</p>
+          <div style="height:1px;background:rgba(0,0,0,0.07);margin:1.2rem 0;"></div>
+          <div style="font-size:0.85rem;color:var(--muted);line-height:1.9;">
+            ✦ 평균 만족도 <strong style="color:var(--text);">4.9 / 5.0</strong><br />
+            ✦ 프로젝트 완성률 <strong style="color:var(--text);">89%</strong><br />
+            ✦ 이직·창업 성공률 <strong style="color:var(--text);">73%</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN -->
+  <section id="join">
+    <div class="join-inner">
+      <span class="section-label fade-in">Join Us</span>
+      <h2 class="section-title fade-in">지금 바로 시작하세요</h2>
+      <p class="section-desc fade-in" style="margin:0 auto;">이메일을 남겨주시면 다음 모집 일정과 커뮤니티 안내를 보내드립니다. 첫 스터디 참여는 무료입니다.</p>
+      <div class="join-form fade-in">
+        <input type="email" id="email-input" placeholder="이메일 주소를 입력하세요" />
+        <button class="btn-primary" onclick="handleJoin()">참여 신청</button>
+      </div>
+      <p class="join-note fade-in">스팸 메일은 절대 보내지 않습니다. 언제든지 구독 취소 가능합니다.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">⚡ AI 싱크클럽</span>
+    <div style="display:flex;gap:1.5rem;">
+      <a href="mailto:contact@aisyncclub.kr">contact@aisyncclub.kr</a>
+      <a href="#">인스타그램</a>
+      <a href="#">링크드인</a>
+    </div>
+    <span class="footer-copy">© 2025 AI 싱크클럽. All rights reserved.</span>
+  </footer>
+
+  <script>
+    /* ── TEXT BACKGROUND FILL ── */
+    (function () {
+      const bg = document.getElementById('text-bg');
+      const words = ['AI 싱크클럽', '안녕'];
+      const cols = Math.ceil(window.innerWidth / 160) + 2;
+      const rows = Math.ceil(window.innerHeight / 80) + 2;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const span = document.createElement('span');
+          span.textContent = words[(r + c) % words.length];
+          span.style.left = (c * 160 - 40) + 'px';
+          span.style.top  = (r * 80 - 20) + 'px';
+          span.style.transform = 'rotate(-25deg)';
+          bg.appendChild(span);
+        }
+      }
+    })();
+
+    /* ── PARTICLE CANVAS ── */
+    (function () {
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let w, h, particles = [];
+
+      function resize() {
+        w = canvas.width = canvas.offsetWidth;
+        h = canvas.height = canvas.offsetHeight;
+      }
+
+      function createParticles(n) {
+        particles = [];
+        for (let i = 0; i < n; i++) {
+          particles.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            r: Math.random() * 1.8 + 0.4,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            opacity: Math.random() * 0.5 + 0.15,
+          });
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+
+        /* connections */
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 110) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(109,40,217,${0.18 * (1 - dist / 110)})`;
+              ctx.lineWidth = 0.7;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        /* dots */
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = w;
+          if (p.x > w) p.x = 0;
+          if (p.y < 0) p.y = h;
+          if (p.y > h) p.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(109,40,217,${p.opacity * 0.6})`;
+          ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', () => { resize(); createParticles(90); });
+      resize();
+      createParticles(90);
+      draw();
+    })();
+
+    /* ── SCROLL FADE-IN ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    /* ── JOIN HANDLER ── */
+    function handleJoin() {
+      const email = document.getElementById('email-input').value.trim();
+      if (!email || !email.includes('@')) {
+        alert('유효한 이메일 주소를 입력해주세요.');
+        return;
+      }
+      window.location.href = `mailto:contact@aisyncclub.kr?subject=AI%20싱크클럽%20참여%20신청&body=안녕하세요%2C%20${encodeURIComponent(email)}%20에서%20참여%20신청합니다.`;
+    }
+  </script>
+</body>
+</html>

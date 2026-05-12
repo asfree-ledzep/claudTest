@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIDO — AI가 대신 해드립니다</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --indigo: #6366f1;
+      --violet: #8b5cf6;
+      --cyan: #06b6d4;
+      --bg: #fafafa;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(0,0,0,0.08);
+      --grad: linear-gradient(135deg, #6366f1, #8b5cf6);
+      --grad2: linear-gradient(135deg, #06b6d4, #6366f1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 5vw;
+      background: rgba(250,250,250,0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-size: 1.3rem; font-weight: 900; letter-spacing: -0.5px;
+      background: var(--grad); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--indigo); }
+
+    .nav-cta {
+      background: var(--grad); color: #fff; border: none;
+      padding: 0.5rem 1.3rem; border-radius: 99px;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      text-decoration: none; transition: opacity 0.2s, transform 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px 5vw 4rem;
+      background: linear-gradient(160deg, #f0f0ff 0%, #faf5ff 40%, #ecfeff 100%);
+      position: relative; overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+    }
+    .glow-1 { width: 400px; height: 400px; background: rgba(99,102,241,0.15); top: -100px; left: -100px; }
+    .glow-2 { width: 300px; height: 300px; background: rgba(6,182,212,0.12); bottom: 0; right: -50px; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25);
+      color: var(--indigo); padding: 0.3rem 1rem; border-radius: 99px;
+      font-size: 0.82rem; font-weight: 600; margin-bottom: 1.5rem;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+      font-weight: 900; line-height: 1.15; letter-spacing: -1.5px;
+      margin-bottom: 1.2rem;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .hero-title .hi { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    .hero-sub {
+      color: var(--muted); font-size: clamp(1rem, 2vw, 1.15rem);
+      max-width: 520px; margin-bottom: 2.5rem;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    .hero-cta-wrap {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 4rem;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .btn-main {
+      background: var(--grad); color: #fff; border: none;
+      padding: 0.9rem 2.2rem; border-radius: 99px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+    }
+    .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(99,102,241,0.45); }
+
+    .btn-ghost {
+      background: transparent; color: var(--text);
+      border: 1.5px solid rgba(0,0,0,0.15);
+      padding: 0.9rem 2.2rem; border-radius: 99px;
+      font-size: 1rem; font-weight: 500; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--indigo); color: var(--indigo); }
+
+    /* ── BEFORE / AFTER SHOWCASE ── */
+    .showcase {
+      width: 100%; max-width: 820px;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+
+    .showcase-tabs {
+      display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: rgba(99,102,241,0.08); border: 1.5px solid transparent;
+      color: var(--muted); padding: 0.45rem 1.1rem; border-radius: 99px;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; font-family: inherit;
+    }
+    .tab-btn.active {
+      background: var(--grad); color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+    }
+
+    .showcase-panel { display: none; }
+    .showcase-panel.active { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }
+
+    .ba-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      text-align: left;
+    }
+
+    .ba-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .ba-label.before { color: #ef4444; }
+    .ba-label.after  { color: #10b981; }
+
+    .ba-card.after-card { border-color: rgba(99,102,241,0.2); box-shadow: 0 4px 24px rgba(99,102,241,0.1); }
+
+    .ba-content { font-size: 0.88rem; color: var(--muted); line-height: 1.8; }
+    .ba-content .tag {
+      display: inline-block; background: rgba(99,102,241,0.1);
+      color: var(--indigo); font-size: 0.75rem; font-weight: 600;
+      padding: 0.15rem 0.6rem; border-radius: 6px; margin: 0.1rem;
+    }
+    .ba-content .tag.green { background: rgba(16,185,129,0.1); color: #10b981; }
+    .ba-content .tag.red { background: rgba(239,68,68,0.1); color: #ef4444; }
+
+    .ba-arrow {
+      font-size: 1.8rem; color: var(--indigo); flex-shrink: 0;
+      animation: arrowPulse 1.8s ease-in-out infinite;
+    }
+
+    .ba-time {
+      display: flex; align-items: center; gap: 0.3rem;
+      margin-top: 0.75rem; font-size: 0.78rem; font-weight: 600;
+    }
+    .ba-time.slow { color: #ef4444; }
+    .ba-time.fast { color: #10b981; }
+
+    /* ── HOW IT WORKS ── */
+    #how {
+      padding: 6rem 5vw;
+      background: #fff;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-center { text-align: center; margin-bottom: 4rem; }
+    .section-label {
+      display: inline-block; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--indigo); margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800; letter-spacing: -0.5px; line-height: 1.25;
+    }
+    .section-desc { color: var(--muted); font-size: 1rem; margin-top: 0.8rem; }
+
+    .steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2rem; max-width: 900px; margin: 0 auto; position: relative;
+    }
+
+    .steps::before {
+      content: ''; position: absolute;
+      top: 40px; left: calc(16.66% + 1rem); right: calc(16.66% + 1rem);
+      height: 2px;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+      opacity: 0.25;
+    }
+
+    .step {
+      text-align: center; position: relative;
+    }
+
+    .step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--grad); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 900; margin: 0 auto 1.2rem;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.35);
+      position: relative; z-index: 1;
+    }
+
+    .step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .step p { color: var(--muted); font-size: 0.9rem; }
+
+    /* ── USE CASES ── */
+    #cases {
+      padding: 6rem 5vw;
+      background: linear-gradient(180deg, #f5f3ff 0%, #ecfeff 100%);
+      border-top: 1px solid var(--border);
+    }
+
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      max-width: 1000px; margin: 0 auto;
+    }
+
+    .case-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 1.8rem;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      cursor: default;
+    }
+    .case-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 36px rgba(99,102,241,0.12);
+      border-color: rgba(99,102,241,0.25);
+    }
+
+    .case-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: rgba(99,102,241,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 1rem;
+    }
+
+    .case-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .case-card p { color: var(--muted); font-size: 0.87rem; line-height: 1.7; }
+
+    .case-save {
+      display: inline-block; margin-top: 1rem;
+      font-size: 0.78rem; font-weight: 700; color: #10b981;
+      background: rgba(16,185,129,0.1); padding: 0.2rem 0.7rem;
+      border-radius: 6px;
+    }
+
+    /* ── SOCIAL PROOF ── */
+    #proof {
+      padding: 6rem 5vw;
+      background: #fff;
+      border-top: 1px solid var(--border);
+    }
+
+    .proof-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; max-width: 900px; margin: 0 auto;
+    }
+
+    .proof-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 20px; padding: 1.8rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .proof-card:hover { border-color: rgba(99,102,241,0.2); box-shadow: 0 6px 24px rgba(99,102,241,0.08); }
+
+    .stars { color: #f59e0b; font-size: 0.9rem; margin-bottom: 0.8rem; }
+
+    .proof-card blockquote {
+      font-size: 0.92rem; color: var(--text); line-height: 1.75;
+      margin-bottom: 1.2rem; font-style: normal;
+    }
+
+    .proof-author {
+      display: flex; align-items: center; gap: 0.7rem;
+    }
+
+    .proof-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; font-weight: 700; color: #fff;
+    }
+
+    .proof-name { font-size: 0.85rem; font-weight: 700; }
+    .proof-role { font-size: 0.78rem; color: var(--muted); }
+
+    /* 통계 바 */
+    .stats-bar {
+      display: flex; gap: 3rem; justify-content: center;
+      padding: 2.5rem 0; border-top: 1px solid var(--border);
+      margin-top: 3rem; flex-wrap: wrap;
+    }
+
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-size: 2.2rem; font-weight: 900;
+      background: var(--grad); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1;
+    }
+    .stat-label { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; }
+
+    /* ── BOTTOM CTA ── */
+    #cta {
+      padding: 6rem 5vw;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      text-align: center; position: relative; overflow: hidden;
+    }
+
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top, rgba(255,255,255,0.1), transparent 60%);
+    }
+
+    #cta h2 {
+      position: relative;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900; color: #fff; letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+    }
+
+    #cta p {
+      position: relative;
+      color: rgba(255,255,255,0.75); font-size: 1.05rem;
+      max-width: 480px; margin: 0 auto 2.5rem;
+    }
+
+    .cta-btns {
+      position: relative;
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+
+    .btn-white {
+      background: #fff; color: var(--indigo);
+      border: none; padding: 0.9rem 2.2rem; border-radius: 99px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+
+    .btn-outline-white {
+      background: transparent; color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.45);
+      padding: 0.9rem 2.2rem; border-radius: 99px;
+      font-size: 1rem; font-weight: 500; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-outline-white:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #111827; color: rgba(255,255,255,0.5);
+      padding: 2rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem; font-size: 0.82rem;
+    }
+
+    .footer-logo {
+      font-size: 1.1rem; font-weight: 900; letter-spacing: -0.5px;
+      background: var(--grad); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    footer a { color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: #fff; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes arrowPulse {
+      0%, 100% { transform: translateX(0); opacity: 1; }
+      50%       { transform: translateX(5px); opacity: 0.6; }
+    }
+
+    .fade-in { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .showcase-panel.active { grid-template-columns: 1fr; }
+      .ba-arrow { transform: rotate(90deg); }
+      .steps { grid-template-columns: 1fr; }
+      .steps::before { display: none; }
+      .cases-grid { grid-template-columns: 1fr; }
+      .proof-grid { grid-template-columns: 1fr; }
+      .stats-bar { gap: 2rem; }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .cases-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="nav-logo">✦ AIDO</span>
+    <ul class="nav-links">
+      <li><a href="#how">작동 방식</a></li>
+      <li><a href="#cases">활용 사례</a></li>
+      <li><a href="#proof">후기</a></li>
+    </ul>
+    <a href="#cta" class="nav-cta">무료로 시작하기</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-glow glow-1"></div>
+    <div class="hero-glow glow-2"></div>
+
+    <span class="hero-badge">🤖 AI 에이전트 · 지금 바로 체험</span>
+
+    <h1 class="hero-title">
+      귀찮은 건 AI가 할게요,<br />
+      <span class="hi">당신은 중요한 것만</span>
+    </h1>
+
+    <p class="hero-sub">
+      이메일 정리부터 보고서 작성, SNS 콘텐츠까지.<br />
+      AIDO가 대신 처리합니다. 코딩 지식 전혀 필요 없어요.
+    </p>
+
+    <div class="hero-cta-wrap">
+      <a href="#cta" class="btn-main">⚡ 지금 바로 체험하기 — 무료</a>
+      <a href="#how" class="btn-ghost">어떻게 작동하나요?</a>
+    </div>
+
+    <!-- BEFORE / AFTER SHOWCASE -->
+    <div class="showcase">
+      <div class="showcase-tabs">
+        <button class="tab-btn active" data-tab="email">📧 이메일 정리</button>
+        <button class="tab-btn" data-tab="meeting">📝 회의록 작성</button>
+        <button class="tab-btn" data-tab="sns">📱 SNS 콘텐츠</button>
+      </div>
+
+      <!-- 이메일 -->
+      <div class="showcase-panel active" id="panel-email">
+        <div class="ba-card">
+          <div class="ba-label before">⛔ Before</div>
+          <div class="ba-content">
+            받은 편지함 <span class="tag red">147개 미읽음</span><br />
+            중요한 메일이 어딨는지 모름<br />
+            하나씩 열어서 읽는 데만<br />
+            <span class="tag red">1시간 30분</span> 소요
+          </div>
+          <div class="ba-time slow">⏱ 90분 소요</div>
+        </div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-card after-card">
+          <div class="ba-label after">✅ After (AIDO)</div>
+          <div class="ba-content">
+            <span class="tag green">액션 필요</span> 3건<br />
+            <span class="tag green">FYI 요약</span> 5건<br />
+            <span class="tag">광고/뉴스</span> 자동 분류<br />
+            핵심만 30초 안에 파악 완료
+          </div>
+          <div class="ba-time fast">⚡ 30초 완료</div>
+        </div>
+      </div>
+
+      <!-- 회의록 -->
+      <div class="showcase-panel" id="panel-meeting">
+        <div class="ba-card">
+          <div class="ba-label before">⛔ Before</div>
+          <div class="ba-content">
+            1시간짜리 회의<br />
+            노트 정리에 <span class="tag red">30분 추가</span><br />
+            빠진 내용, 맥락 오류 발생<br />
+            팀 공유까지 <span class="tag red">2시간</span>
+          </div>
+          <div class="ba-time slow">⏱ 2시간 이상</div>
+        </div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-card after-card">
+          <div class="ba-label after">✅ After (AIDO)</div>
+          <div class="ba-content">
+            <span class="tag green">핵심 결정사항</span> 자동 추출<br />
+            <span class="tag green">담당자별 액션</span> 정리<br />
+            <span class="tag green">다음 회의 안건</span> 초안 생성<br />
+            회의 끝나자마자 바로 공유
+          </div>
+          <div class="ba-time fast">⚡ 회의 직후 완료</div>
+        </div>
+      </div>
+
+      <!-- SNS -->
+      <div class="showcase-panel" id="panel-sns">
+        <div class="ba-card">
+          <div class="ba-label before">⛔ Before</div>
+          <div class="ba-content">
+            뭐 써야 하지? 막막함<br />
+            초안 작성 <span class="tag red">40분</span><br />
+            퇴고 · 해시태그 조사 <span class="tag red">20분</span><br />
+            결국 오늘도 업로드 못 함
+          </div>
+          <div class="ba-time slow">⏱ 1시간 이상, 포기</div>
+        </div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-card after-card">
+          <div class="ba-label after">✅ After (AIDO)</div>
+          <div class="ba-content">
+            주제 한 줄 입력<br />
+            <span class="tag green">인스타용</span> <span class="tag green">링크드인용</span> <span class="tag green">X용</span><br />
+            해시태그 · 이모지 자동 포함<br />
+            5가지 톤 버전 동시 제공
+          </div>
+          <div class="ba-time fast">⚡ 10초 완료</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="section-center fade-in">
+      <span class="section-label">How It Works</span>
+      <h2 class="section-title">딱 3단계, 그게 전부예요</h2>
+      <p class="section-desc">설명서 읽을 필요 없어요. 말하듯이 입력하면 됩니다.</p>
+    </div>
+    <div class="steps">
+      <div class="step fade-in">
+        <div class="step-num">1</div>
+        <h3>원하는 걸 말하세요</h3>
+        <p>평소 말하듯 입력하면 됩니다.<br />"이메일 정리해줘" 처럼요.</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">2</div>
+        <h3>AI가 자율 처리합니다</h3>
+        <p>AIDO가 알아서 분석하고<br />필요한 작업을 순서대로 실행합니다.</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">3</div>
+        <h3>결과물을 받으세요</h3>
+        <p>바로 쓸 수 있는 완성된 결과물을<br />수 초 안에 받아 보세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section id="cases">
+    <div class="section-center fade-in">
+      <span class="section-label">Use Cases</span>
+      <h2 class="section-title">이런 것들을 대신 해드려요</h2>
+      <p class="section-desc">코딩이나 AI 지식 없이도 바로 쓸 수 있습니다.</p>
+    </div>
+    <div class="cases-grid">
+      <div class="case-card fade-in">
+        <div class="case-icon">📧</div>
+        <h3>이메일 자동 정리</h3>
+        <p>쌓인 메일을 중요도순으로 분류하고, 답장이 필요한 것만 골라 요약해드립니다.</p>
+        <span class="case-save">평균 73분 절약/일</span>
+      </div>
+      <div class="case-card fade-in">
+        <div class="case-icon">📝</div>
+        <h3>회의록 자동 작성</h3>
+        <p>회의 내용을 붙여넣으면 결정사항, 담당자, 액션아이템을 자동으로 정리합니다.</p>
+        <span class="case-save">평균 45분 절약/회의</span>
+      </div>
+      <div class="case-card fade-in">
+        <div class="case-icon">📱</div>
+        <h3>SNS 콘텐츠 생성</h3>
+        <p>주제만 던지면 인스타, 링크드인, X에 최적화된 콘텐츠를 동시에 만들어줍니다.</p>
+        <span class="case-save">평균 50분 절약/포스팅</span>
+      </div>
+      <div class="case-card fade-in">
+        <div class="case-icon">📊</div>
+        <h3>데이터 요약 보고서</h3>
+        <p>엑셀 데이터를 올리면 핵심 인사이트와 시각화 초안까지 자동으로 생성합니다.</p>
+        <span class="case-save">평균 2시간 절약/보고서</span>
+      </div>
+      <div class="case-card fade-in">
+        <div class="case-icon">🔍</div>
+        <h3>리서치 자동화</h3>
+        <p>주제를 입력하면 최신 정보를 수집·요약하고, 출처와 함께 보기 좋게 정리합니다.</p>
+        <span class="case-save">평균 90분 절약/리서치</span>
+      </div>
+      <div class="case-card fade-in">
+        <div class="case-icon">✉️</div>
+        <h3>공문·제안서 초안</h3>
+        <p>목적과 대상만 입력하면 격식체 공문서나 제안서 초안을 즉시 생성합니다.</p>
+        <span class="case-save">평균 60분 절약/문서</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <section id="proof">
+    <div class="section-center fade-in">
+      <span class="section-label">Beta Testers</span>
+      <h2 class="section-title">먼저 써본 분들의 이야기</h2>
+    </div>
+    <div class="proof-grid">
+      <div class="proof-card fade-in">
+        <div class="stars">★★★★★</div>
+        <blockquote>"매일 이메일 정리에 1시간씩 쓰던 게 이제 5분이에요. 처음엔 반신반의했는데, 써보고 팀 전체에 소개했습니다."</blockquote>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background: linear-gradient(135deg,#6366f1,#8b5cf6);">김</div>
+          <div>
+            <div class="proof-name">김지연</div>
+            <div class="proof-role">스타트업 마케터</div>
+          </div>
+        </div>
+      </div>
+      <div class="proof-card fade-in">
+        <div class="stars">★★★★★</div>
+        <blockquote>"AI라고 하면 어렵게 생각했는데, 진짜 말하듯이 쓰면 되더라고요. 회의록이 자동으로 정리되는 게 마법 같아요."</blockquote>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background: linear-gradient(135deg,#06b6d4,#6366f1);">박</div>
+          <div>
+            <div class="proof-name">박성민</div>
+            <div class="proof-role">중소기업 팀장</div>
+          </div>
+        </div>
+      </div>
+      <div class="proof-card fade-in">
+        <div class="stars">★★★★★</div>
+        <blockquote>"SNS 운영이 너무 힘들었는데, 이제는 아이디어만 적으면 3개 플랫폼용 글이 한 번에 나와요. 팔로워도 늘었어요."</blockquote>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background: linear-gradient(135deg,#f59e0b,#ef4444);">이</div>
+          <div>
+            <div class="proof-name">이소희</div>
+            <div class="proof-role">프리랜서 크리에이터</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item fade-in">
+        <div class="stat-num">2,400+</div>
+        <div class="stat-label">베타 사용자</div>
+      </div>
+      <div class="stat-item fade-in">
+        <div class="stat-num">94%</div>
+        <div class="stat-label">재사용 의향</div>
+      </div>
+      <div class="stat-item fade-in">
+        <div class="stat-num">68분</div>
+        <div class="stat-label">일 평균 절약 시간</div>
+      </div>
+      <div class="stat-item fade-in">
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">평균 만족도</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section id="cta">
+    <h2>오늘부터 AI가 대신 일하게 하세요</h2>
+    <p>회원가입 후 7일 무료 체험. 신용카드 불필요.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-white" onclick="alert('베타 신청이 완료되었습니다! 곧 연락드릴게요 😊'); return false;">⚡ 무료로 시작하기</a>
+      <a href="#how" class="btn-outline-white">작동 방식 보기</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">✦ AIDO</span>
+    <div style="display:flex;gap:1.5rem;">
+      <a href="#">이용약관</a>
+      <a href="#">개인정보처리방침</a>
+      <a href="mailto:hello@aido.ai">hello@aido.ai</a>
+    </div>
+    <span>© 2025 AIDO. All rights reserved.</span>
+  </footer>
+
+  <script>
+    /* ── TAB SWITCHER ── */
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.showcase-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    /* ── SCROLL FADE-IN ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    /* ── STAGGERED FADE FOR GRIDS ── */
+    document.querySelectorAll('.cases-grid .fade-in, .proof-grid .fade-in, .steps .fade-in').forEach((el, i) => {
+      el.style.transitionDelay = (i * 0.1) + 's';
+    });
+  </script>
+</body>
+</html>

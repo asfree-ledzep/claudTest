@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Start-Process \"C:\\\\Users\\\\LENOVO\\\\claud_code_workspace\\\\landing.html\")"
+    ]
+  }
+}
